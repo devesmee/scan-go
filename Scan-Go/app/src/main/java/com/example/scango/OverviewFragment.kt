@@ -16,6 +16,7 @@ class OverviewFragment : Fragment() {
 
     private lateinit var checkoutButton: Button
     private lateinit var scanButton: Button
+    private val databaseManager = DatabaseManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class OverviewFragment : Fragment() {
         checkoutButton = view.findViewById(R.id.checkoutButton)
         scanButton = view.findViewById(R.id.scanButton)
         setNavigation()
+        databaseManager.setProduct()
 
         return view;
     }

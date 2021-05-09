@@ -3,7 +3,7 @@ package com.example.scango
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +13,13 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.google.common.util.concurrent.ListenableFuture
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
+
 
 /**
  * A simple [Fragment] subclass.
@@ -39,13 +40,15 @@ class ScanFragment : Fragment() {
     private val backCamera = CameraSelector.LENS_FACING_BACK;
     private val cameraSelector = CameraSelector.Builder().requireLensFacing(backCamera).build()
 
+    private val databaseManager = DatabaseManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scan, container, false)
@@ -65,23 +68,37 @@ class ScanFragment : Fragment() {
 
         // used to bind the lifecycle of camera to the lifecycle owner
         val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+        // cameraExecutor = Executors.newSingleThreadExecutor()
+        val cameraExecutor = ContextCompat.getMainExecutor(context!!)
+        // Setup the ImageAnalyzer for the ImageAnalysis use case
+        val imageAnalysis = ImageAnalysis.Builder()
+            .build()
+            .also {
+                it.setAnalyzer(cameraExecutor, BarcodeAnalyzer { barcode ->
+                    //  TO DO: after scanning barcode
+                    Log.e("SCANNED BARCODE: ", barcode)
+                })
+            }
 
         // add a listener to the cameraProviderFuture
-        val cameraExecutor = ContextCompat.getMainExecutor(context!!)
-        cameraProviderFuture.addListener(Runnable {cameraProviderFuture.addListener(Runnable {
-            cameraProvider.unbindAll()
-            camera = cameraProvider.bindToLifecycle(
-                this as LifecycleOwner,
-                cameraSelector,
-                preview
-            )
-            preview.setSurfaceProvider(cameraView.surfaceProvider)
-        }, cameraExecutor)}, cameraExecutor)
+        cameraProviderFuture.addListener(Runnable {
+            cameraProviderFuture.addListener(Runnable {
+                cameraProvider.unbindAll()
+                camera = cameraProvider.bindToLifecycle(
+                        this as LifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageAnalysis
+                )
+                preview.setSurfaceProvider(cameraView.surfaceProvider)
+            }, cameraExecutor)
+        }, cameraExecutor)
+
     }
 
     private fun checkPermissions() {
         if (ActivityCompat.checkSelfPermission(context!!.applicationContext,
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera()
         } else {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), permissionCode)
@@ -110,8 +127,8 @@ class ScanFragment : Fragment() {
     private fun setupBarcodeScanner() {
         barcodeOptions = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(
-                Barcode.FORMAT_EAN_13,
-                Barcode.FORMAT_UPC_A)
+                    Barcode.FORMAT_EAN_13,
+                    Barcode.FORMAT_UPC_A)
             .build()
         barcodeScanner = BarcodeScanning.getClient(barcodeOptions)
     }
