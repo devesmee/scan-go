@@ -1,11 +1,21 @@
 package com.example.scango
 
+import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.github.sumimakito.awesomeqr.AwesomeQrRenderer
+import com.github.sumimakito.awesomeqr.RenderResult
+import com.github.sumimakito.awesomeqr.option.RenderOption
+import com.github.sumimakito.awesomeqr.option.color.Color
+import java.text.DecimalFormat
 
 /**
  * A simple [Fragment] subclass.
@@ -15,6 +25,8 @@ import android.widget.Button
 class CheckoutFragment : Fragment() {
 
     private lateinit var cancelButton: Button
+    private lateinit var checkoutPrice: TextView
+    private lateinit var qrCodeImageView: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +39,13 @@ class CheckoutFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_checkout, container, false)
         cancelButton = view.findViewById(R.id.cancelButton)
+        checkoutPrice = view.findViewById(R.id.checkoutPrice)
+        qrCodeImageView = view.findViewById(R.id.qrCodeImageView)
+        val format = DecimalFormat("0.00")
+        checkoutPrice.text = format.format(GroceriesManager.getTotalPrice())
+
         setNavigation()
+        generateQRCode()
 
         return view;
     }
@@ -43,17 +61,22 @@ class CheckoutFragment : Fragment() {
         }
     }
 
-    /*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment CheckoutFragment.
-         */
-        @JvmStatic
-        fun newInstance() =
-            CheckoutFragment()
+    private fun generateQRCode() {
+        val qrCode = RenderOption()
+        val format = DecimalFormat("0.00")
+        qrCode.size = 800
+        qrCode.borderWidth = 20
+        qrCode.color = Color(false, ContextCompat.getColor(requireContext(), R.color.yellow_light),
+            ContextCompat.getColor(requireContext(), R.color.white), ContextCompat.getColor(requireContext(), R.color.yellow))
+        qrCode.content = format.format(GroceriesManager.getTotalPrice())
+
+        try {
+            val result = AwesomeQrRenderer.render(qrCode)
+            if (result.bitmap != null) {
+                qrCodeImageView.setImageBitmap(result.bitmap)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
-    */
 }

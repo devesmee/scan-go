@@ -1,6 +1,7 @@
 package com.example.scango
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -68,15 +69,14 @@ class ScanFragment : Fragment() {
 
         // used to bind the lifecycle of camera to the lifecycle owner
         val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-        // cameraExecutor = Executors.newSingleThreadExecutor()
         val cameraExecutor = ContextCompat.getMainExecutor(context!!)
         // Setup the ImageAnalyzer for the ImageAnalysis use case
         val imageAnalysis = ImageAnalysis.Builder()
             .build()
             .also {
                 it.setAnalyzer(cameraExecutor, BarcodeAnalyzer { barcode ->
-                    //  TO DO: after scanning barcode
-                    Log.e("SCANNED BARCODE: ", barcode)
+                    databaseManager.addProduct(barcode, activity!!)
+                    it.clearAnalyzer()
                 })
             }
 

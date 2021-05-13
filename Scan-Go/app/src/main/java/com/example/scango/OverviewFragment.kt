@@ -1,11 +1,16 @@
 package com.example.scango
 
+import android.database.DataSetObserver
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ListView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import java.text.DecimalFormat
 
 /**
  * A simple [Fragment] subclass.
@@ -16,7 +21,8 @@ class OverviewFragment : Fragment() {
 
     private lateinit var checkoutButton: Button
     private lateinit var scanButton: Button
-    private val databaseManager = DatabaseManager
+    private lateinit var productListView: ListView
+    private lateinit var totalPriceTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +36,22 @@ class OverviewFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_overview, container, false)
         checkoutButton = view.findViewById(R.id.checkoutButton)
         scanButton = view.findViewById(R.id.scanButton)
+        productListView = view.findViewById(R.id.listviewProducts)
+        totalPriceTextView = view.findViewById(R.id.totalPrice)
+        val format = DecimalFormat("0.00")
+        totalPriceTextView.text = format.format(GroceriesManager.getTotalPrice())
         setNavigation()
-        databaseManager.setProduct()
+
+        val productListAdapter =
+            context?.let { ProductsListAdapter(it, R.layout.list_item_product, activity!!) }
+        productListView.adapter = productListAdapter
+        productListAdapter?.notifyDataSetChanged()
+        productListAdapter?.registerDataSetObserver(object : DataSetObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                totalPriceTextView.text = format.format(GroceriesManager.getTotalPrice())
+            }
+        })
 
         return view;
     }
@@ -53,18 +73,4 @@ class OverviewFragment : Fragment() {
             }
         }
     }
-
-    /*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment OverviewFragment.
-         */
-        @JvmStatic
-        fun newInstance() =
-            OverviewFragment()
-    }
-    */
 }
