@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -20,7 +21,7 @@ import java.text.DecimalFormat
 class OverviewFragment : Fragment() {
 
     private lateinit var checkoutButton: Button
-    private lateinit var scanButton: Button
+    private lateinit var scanButton: ImageButton
     private lateinit var productListView: ListView
     private lateinit var totalPriceTextView: TextView
 

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.w3c.dom.Text
@@ -17,8 +18,8 @@ import kotlin.collections.ArrayList
 class ProductsListAdapter(context: Context, private val resource: Int, private val activity: FragmentActivity) : BaseAdapter() {
 
     private var inflater: LayoutInflater = (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-    private lateinit var productAdd : Button
-    private lateinit var productRemove : Button
+    private lateinit var productAdd : ImageButton
+    private lateinit var productRemove : ImageButton
 
     override fun getCount(): Int {
         return GroceriesManager.getProducts().size

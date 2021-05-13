@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -29,7 +30,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
  */
 class ScanFragment : Fragment() {
 
-    private lateinit var overviewButton: Button
+    private lateinit var overviewButton: ImageButton
     private lateinit var cameraView: PreviewView
 
     private lateinit var camera: Camera

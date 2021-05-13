@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -24,7 +25,7 @@ import java.text.DecimalFormat
  */
 class CheckoutFragment : Fragment() {
 
-    private lateinit var cancelButton: Button
+    private lateinit var cancelButton: ImageButton
     private lateinit var checkoutPrice: TextView
     private lateinit var qrCodeImageView: ImageView
 
@@ -66,8 +67,8 @@ class CheckoutFragment : Fragment() {
         val format = DecimalFormat("0.00")
         qrCode.size = 800
         qrCode.borderWidth = 20
-        qrCode.color = Color(false, ContextCompat.getColor(requireContext(), R.color.yellow_light),
-            ContextCompat.getColor(requireContext(), R.color.white), ContextCompat.getColor(requireContext(), R.color.yellow))
+        qrCode.color = Color(false, ContextCompat.getColor(requireContext(), R.color.white),
+            ContextCompat.getColor(requireContext(), R.color.yellow_light), ContextCompat.getColor(requireContext(), R.color.yellow))
         qrCode.content = format.format(GroceriesManager.getTotalPrice())
 
         try {

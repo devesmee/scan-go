@@ -26,15 +26,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/listProductAdd"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:textSize="20sp"
-        android:text="+"
+        android:src="@drawable/ic_add"
+        android:background="@drawable/round_button"
         app:layout_constraintEnd_toStartOf="@id/listProductAmount"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="10dp"/>
 
     <TextView
         android:id="@+id/listProductAmount"
@@ -42,16 +44,19 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:text="1"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/listProductRemove"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/listProductRemove"
+        app:layout_constraintBottom_toBottomOf="@id/listProductRemove"
+        android:layout_marginEnd="10dp"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/listProductRemove"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:textSize="20sp"
-        android:text="-"
+        android:src="@drawable/ic_minus"
+        android:background="@drawable/round_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
