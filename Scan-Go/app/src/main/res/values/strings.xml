@@ -3,8 +3,16 @@
     <string name="empty_scan_list">Start scanning items…</string>
     <string name="checkout">Check out</string>
     <string name="total_price">Total price:</string>
-    <string name="hardcoded_total_price">0.00</string>
+    <string name="item_price">&#8364; %1$s</string>
+    <string name="total_price_euros">&#8364; %1$s</string>
     <string name="scan_instruction">Scan the barcode of the product…</string>
     <string name="checkout_total_price">The total price is:</string>
     <string name="checkout_instruction">Please let the cashier scan the QR code.</string>
+    <!-- DIALOGS -->
+    <string name="product_added_title">Product was added!</string>
+    <string name="product_added_text">The product was successfully added to your cart.</string>
+    <string name="product_not_found_title">Product was not found!</string>
+    <string name="product_not_found_text">Please ask the cashier to scan this item.</string>
+    <string name="remove_product_title">You are about to remove a product!</string>
+    <string name="remove_product_text">Are you sure you want to delete %s ?</string>
 </resources>

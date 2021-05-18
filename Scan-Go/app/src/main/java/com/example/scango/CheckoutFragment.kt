@@ -43,7 +43,7 @@ class CheckoutFragment : Fragment() {
         checkoutPrice = view.findViewById(R.id.checkoutPrice)
         qrCodeImageView = view.findViewById(R.id.qrCodeImageView)
         val format = DecimalFormat("0.00")
-        checkoutPrice.text = format.format(GroceriesManager.getTotalPrice())
+        checkoutPrice.text = getString(R.string.total_price_euros, format.format(GroceriesManager.getTotalPrice()))
 
         setNavigation()
         generateQRCode()

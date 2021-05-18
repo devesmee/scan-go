@@ -1,10 +1,12 @@
 package com.example.scango
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.ImageButton
@@ -15,7 +17,7 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ProductsListAdapter(context: Context, private val resource: Int, private val activity: FragmentActivity) : BaseAdapter() {
+class ProductsListAdapter(private val context: Context, private val resource: Int, private val activity: FragmentActivity) : BaseAdapter() {
 
     private var inflater: LayoutInflater = (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
     private lateinit var productAdd : ImageButton
@@ -49,7 +51,7 @@ class ProductsListAdapter(context: Context, private val resource: Int, private v
 
         productName?.text = getItem(position).getProductName()
         val format = DecimalFormat("0.00")
-        productPrice?.text = format.format(getItem(position).getTotalPrice())
+        productPrice?.text = context.getString(R.string.item_price, format.format(getItem(position).getTotalPrice()))
         productAmount?.text = getItem(position).getAmount().toString()
 
         setButtonActions(getItem(position))
@@ -76,18 +78,28 @@ class ProductsListAdapter(context: Context, private val resource: Int, private v
     }
 
     private fun setRemoveProductDialog(product: Product) {
-        val alertDialogBuilder = AlertDialog.Builder(activity)
-        alertDialogBuilder.setTitle("Removing a product")
-        alertDialogBuilder.setMessage("Are you sure you want to delete " + product.getProductName() + "?")
-        alertDialogBuilder.setPositiveButton("Yes") { dialog, which ->
+        val removeProductDialog = Dialog(context)
+        removeProductDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        removeProductDialog.setCancelable(false)
+        removeProductDialog.setContentView(R.layout.dialog_layout)
+        val title = removeProductDialog.findViewById<TextView>(R.id.dialog_title)
+        title.text = context.getString(R.string.remove_product_title)
+        val body = removeProductDialog.findViewById<TextView>(R.id.dialog_text)
+        body.text = context.getString(R.string.remove_product_text, product.getProductName())
+        val okButton = removeProductDialog.findViewById<Button>(R.id.dialog_ok_button)
+        okButton.visibility = View.INVISIBLE
+        val yesButton = removeProductDialog.findViewById<Button>(R.id.dialog_yes_button)
+        yesButton.setOnClickListener {
             GroceriesManager.getProducts().remove(product)
             GroceriesManager.setTotalPrice()
             notifyDataSetChanged()
+            removeProductDialog.dismiss()
         }
-        alertDialogBuilder.setNegativeButton("No") { dialog, which ->
-            dialog.dismiss()
+        val noButton = removeProductDialog.findViewById<Button>(R.id.dialog_no_button)
+        noButton.setOnClickListener{
+            removeProductDialog.dismiss()
         }
-        alertDialogBuilder.show()
+        removeProductDialog.show()
     }
 
 }

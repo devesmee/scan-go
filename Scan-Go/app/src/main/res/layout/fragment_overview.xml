@@ -62,7 +62,7 @@
         android:id="@+id/totalPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hardcoded_total_price"
+        android:text="@string/total_price_euros"
         android:textStyle="italic"
         android:textColor="@color/black"
         android:textSize="18sp"

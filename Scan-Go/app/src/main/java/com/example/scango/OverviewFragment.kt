@@ -1,11 +1,14 @@
 package com.example.scango
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.database.DataSetObserver
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ListView
@@ -24,6 +27,7 @@ class OverviewFragment : Fragment() {
     private lateinit var scanButton: ImageButton
     private lateinit var productListView: ListView
     private lateinit var totalPriceTextView: TextView
+    private lateinit var emptyListTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +43,9 @@ class OverviewFragment : Fragment() {
         scanButton = view.findViewById(R.id.scanButton)
         productListView = view.findViewById(R.id.listviewProducts)
         totalPriceTextView = view.findViewById(R.id.totalPrice)
+        emptyListTextView = view.findViewById(R.id.emptyListText)
         val format = DecimalFormat("0.00")
-        totalPriceTextView.text = format.format(GroceriesManager.getTotalPrice())
+        totalPriceTextView.text = getString(R.string.total_price_euros, format.format(GroceriesManager.getTotalPrice()))
         setNavigation()
 
         val productListAdapter =
@@ -50,9 +55,20 @@ class OverviewFragment : Fragment() {
         productListAdapter?.registerDataSetObserver(object : DataSetObserver() {
             override fun onChanged() {
                 super.onChanged()
-                totalPriceTextView.text = format.format(GroceriesManager.getTotalPrice())
+                totalPriceTextView.text = getString(R.string.total_price_euros, format.format(GroceriesManager.getTotalPrice()))
+                Log.e("product adapter count: ", productListAdapter.count.toString())
+                if(productListAdapter.count > 0) {
+                    emptyListTextView.visibility = View.INVISIBLE
+                } else {
+                    emptyListTextView.visibility = View.VISIBLE
+                }
             }
         })
+        if(productListAdapter!!.count > 0) {
+            emptyListTextView.visibility = View.INVISIBLE
+        } else {
+            emptyListTextView.visibility = View.VISIBLE
+        }
 
         return view;
     }
